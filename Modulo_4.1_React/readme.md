@@ -1,212 +1,223 @@
-# 03 List
+# Proyecto React - Módulo 4.1 Frameworks
 
-## Summary
+Aplicación React desarrollada con Vite, TypeScript y Material-UI que integra la API de GitHub y Rick & Morty.
 
-This example takes the _02-login_ example as a starting point.
+## 📋 Tabla de Contenidos
 
-We are going to implement a list page and link it to a detail page.
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Tecnologías Utilizadas](#-tecnologías-utilizadas)
+- [Instalación y Configuración](#-instalación-y-configuración)
+- [Gestión de Estado con Context API](#-gestión-de-estado-con-context-api)
+- [Rutas de la Aplicación](#-rutas-de-la-aplicación)
+- [Scripts Disponibles](#-scripts-disponibles)
 
-That is, we will show a list of members that belong to a Github organisation.
-and when we click on a user's name we'll navigate to the detail page by passing in the
-detail page by passing in the URL the id of the selected member.
+## 📁 Estructura del Proyecto
 
-In this example we'll do a direct implementation of the list, if you
-you want to see a step by step you can consult a previous example that we have
-which shows how to create a list of users step by step.
+```
+Modulo_4.1_React/
+├── src/
+│   ├── app.tsx                 # Componente raíz de la aplicación
+│   ├── index.tsx               # Punto de entrada de la aplicación
+│   ├── styles.css              # Estilos globales
+│   │
+│   ├── layouts/                # Layouts de la aplicación
+│   │   ├── app/                # Layout principal con header
+│   │   └── auth.layout.tsx     # Layout para autenticación
+│   │
+│   ├── pods/                   # Módulos funcionales (lógica de negocio)
+│   │   ├── login/              # Gestión de login
+│   │   │   ├── login.context.tsx
+│   │   │   ├── login.component.tsx
+│   │   │   └── ...
+│   │   │
+│   │   ├── organization/       # Gestión de organizaciones
+│   │   │   ├── organization.context.tsx
+│   │   │   └── ...
+│   │   │
+│   │   ├── list/               # Listado de miembros de GitHub
+│   │   │   ├── list.component.tsx
+│   │   │   ├── list.mappers.ts
+│   │   │   └── api/
+│   │   │
+│   │   ├── detail/             # Detalle de miembro de GitHub
+│   │   │
+│   │   └── rickMorty/          # Funcionalidad Rick & Morty
+│   │       ├── searchCharacter/
+│   │       │   └── searchCharacter.context.tsx
+│   │       ├── list/
+│   │       └── detail/
+│   │
+│   ├── scenes/                 # Páginas/Vistas de la aplicación
+│   │   ├── LoginScene.tsx
+│   │   ├── ListScene.tsx
+│   │   ├── DetailScene.tsx
+│   │   ├── ListRickMortyScene.tsx
+│   │   └── DetailRickMortyScene.tsx
+│   │
+│   └── router/                 # Configuración de rutas
+│       ├── app.router.tsx
+│       └── routes.ts
+│
+├── index.html
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+└── README.md
+```
 
-## Paso a Paso
+### Organización por Capas
 
-- First we copy the above example, and do an _npm install_.
+El proyecto sigue una arquitectura en capas:
+
+- **`scenes/`**: Componentes de página que representan las diferentes vistas de la aplicación
+- **`pods/`**: Módulos funcionales que contienen la lógica de negocio, componentes, contextos y llamadas a API
+- **`layouts/`**: Plantillas de diseño que envuelven las páginas
+- **`router/`**: Configuración de rutas y navegación
+
+## 🚀 Instalación y Configuración
+
+### Prerrequisitos
+
+- Node.js (versión 16 o superior)
+- npm o yarn
+
+### Pasos para ejecutar el proyecto en local
+
+1. **Clonar el repositorio** (si aplica):
+
+   ```bash
+   git clone <url-del-repositorio>
+   cd Modulo_4.1_React
+   ```
+
+2. **Instalar dependencias**:
+
+   ```bash
+   npm install
+   ```
+
+3. **Iniciar el servidor de desarrollo**:
+
+   ```bash
+   npm start
+   ```
+
+   El servidor se iniciará en `http://localhost:5173` (puerto por defecto de Vite)
+
+4. **Compilar para producción**:
+
+   ```bash
+   npm run build
+   ```
+
+5. **Previsualizar la build de producción**:
+   ```bash
+   npm run preview
+   ```
+
+## 🔄 Gestión de Estado con Context API
+
+El proyecto utiliza **React Context API** para gestionar el estado global de la aplicación. Se han implementado tres contextos principales:
+
+### 1. LoginContext
+
+**Ubicación**: `src/pods/login/login.context.tsx`
+
+**Propósito**: Almacenar y gestionar el nombre de usuario logueado.
+
+**Características**:
+
+- Estado inicial: cadena vacía `""`
+- Persiste durante toda la sesión de la aplicación
+- Accesible desde cualquier componente hijo del `LoginProvider`
+
+### 2. OrganizationContext
+
+**Ubicación**: `src/pods/organization/organization.context.tsx`
+
+**Propósito**: Gestionar la organización de GitHub seleccionada para consultar sus miembros.
+
+**Características**:
+
+- Estado inicial: `"lemoncode"`
+- Se utiliza en las llamadas a la API de GitHub para obtener miembros de la organización
+- Permite cambiar dinámicamente la organización consultada
+
+### 3. CharacterContext
+
+**Ubicación**: `src/pods/rickMorty/searchCharacter/searchCharacter.context.tsx`
+
+**Propósito**: Gestionar el filtro de búsqueda de personajes de Rick & Morty.
+
+**Características**:
+
+- Estado inicial: cadena vacía `""`
+- Se utiliza como parámetro de búsqueda en la API de Rick & Morty
+- Permite filtrar personajes por nombre
+
+### Jerarquía de Providers
+
+Los contextos están anidados en el siguiente orden en `app.router.tsx`:
+
+```typescript
+<LoginProvider>
+  <OrganizationProvider>
+    <CharacterProvider>
+      <Router>
+        {/* Rutas de la aplicación */}
+      </Router>
+    </CharacterProvider>
+  </OrganizationProvider>
+</LoginProvider>
+```
+
+Esta jerarquía garantiza que todos los componentes de la aplicación tengan acceso a los tres contextos.
+
+## 🗺 Rutas de la Aplicación
+
+El proyecto utiliza **React Router DOM** para la navegación. Las rutas están definidas en `src/router/routes.ts`:
+
+| Ruta              | Componente             | Descripción                             |
+| ----------------- | ---------------------- | --------------------------------------- |
+| `/`               | `LoginScene`           | Página de inicio/login                  |
+| `/list`           | `ListScene`            | Listado de miembros de GitHub           |
+| `/detail/:login`  | `DetailScene`          | Detalle de un miembro de GitHub         |
+| `/rick-morty`     | `ListRickMortyScene`   | Listado de personajes de Rick & Morty   |
+| `/rick-morty/:id` | `DetailRickMortyScene` | Detalle de un personaje de Rick & Morty |
+
+## 📜 Scripts Disponibles
 
 ```bash
-npm install
+# Iniciar servidor de desarrollo
+npm start
+
+# Compilar para producción
+npm run build
+
+# Previsualizar build de producción
+npm run preview
+
+# Formatear código con Prettier
+npm run format
+
+# Verificar formato de código
+npm run format:check
 ```
 
-- If we want to see what kind of data we are going to handle, we can open the web browser and see what Github's Rest API returns.
+## 🌐 APIs Utilizadas
 
-```bash
-https://api.github.com/orgs/lemoncode/members
-```
+### GitHub API
 
-- We are going to create an interface to have our interface typed, and modify the component that will display this listing.
+- **Endpoint**: `https://api.github.com/orgs/{organization}/members`
+- **Uso**: Obtener listado de miembros de una organización
+- **Autenticación**: No requerida (límite de rate más bajo)
 
-_./src/list.tsx_
+### Rick & Morty API
 
-```diff
-import React from "react";
-import { Link } from "react-router-dom";
+- **Endpoint**: `https://rickandmortyapi.com/api/character`
+- **Uso**: Obtener personajes de la serie
+- **Parámetros**: `page`, `name` (opcional para búsqueda)
 
-+ interface MemberEntity {
-+   id : string;
-+   login: string;
-+   avatar_url: string;
-+ }
+---
 
-export const ListPage: React.FC = () => {
-+  const [members, setMembers] = React.useState<MemberEntity[]>([]);
-
-  return (
-    <>
-      <h2>Hello from List page</h2>
-      <Link to="/detail">Navigate to detail page</Link>
-    </>
-  );
-};
-```
-
-- We are now going to load the data
-
-_./src/list.tsx_
-
-```diff
-export const ListPage: React.FC = () => {
-  const [members, setMembers] = React.useState<MemberEntity>([]);
-
-+  React.useEffect(() => {
-+    fetch(`https://api.github.com/orgs/lemoncode/members`)
-+      .then((response) => response.json())
-+      .then((json) => setMembers(json));
-+  }, []);
-
-  return (
-```
-
-- Let's check that the data is indeed being loaded:
-
-_./src/list.tsx_
-
-```diff
-  return (
-    <>
-      <h2>Hello from List page</h2>
-+    {members.map((member) =>
-+       <span key={member.id}>{member.login}</span>
-+    )}
--      <Link to="/detail">Navigate to detail page</Link>
-    </>
-  );
-```
-
-- And now let's add a grid table showing the data:
-
-_./src/styles.css_
-
-```diff
-+ .list-user-list-container {
-+  display: grid;
-+  grid-template-columns: 80px 1fr 3fr;
-+  grid-template-rows: 20px;
-+  grid-auto-rows: 80px;
-+  grid-gap: 10px 5px;
-+}
-+
-+.list-header {
-+  background-color: #2f4858;
-+  color: white;
-+  font-weight: bold;
-+}
-+
-+.list-user-list-container > img {
-+  width: 80px;
-+}
-```
-
-_./src/list.tsx_
-
-```diff
-  return (
-    <>
--      <h2>Hello from List page</h2>
--      {members.map((member) => (
--        <span key={member.id}>{member.login}</span>
--      ))}
-+      <div className="list-user-list-container">
-+        <span className="list-header">Avatar</span>
-+        <span className="list-header">Id</span>
-+        <span className="list-header">Name</span>
-+        {members.map((member) => (
-+          <React.Fragment key={member.id}>
-+            <img src={member.avatar_url} />
-+            <span>{member.id}</span>
-+            <span>{member.login}</span>
-+          </React.Fragment>
-+        ))}
-+      </div>
-    </>
-  );
-```
-
-- So far so good, but I want that when the user clicks on a member's name, he/she navigates to the
-  member navigates to the detail page of the application to display the token, we could first
-  first we could think of building something like this:
-
-```diff
-  <td>
--    <span>{member.login}</span>
-+    <Link to={`/detail/${member.login}`}>{member.login}</Link>
-  </td>
-```
-
-- Another way to create the url is to use _generatePath_, but be careful in version 5
-  this did do the encoding of the parameters, in version 6 it didn't (https://github.com/remix-run/react-router/issues/7428)
-
-_./src/list.tsx_
-
-```diff
-import React from "react";
-- import { Link } from "react-router-dom";
-+ import { Link, generatePath } from "react-router-dom";
-```
-
-_./src/list.tsx_
-
-```diff
-  <td>
--    <Link to={`/detail/${member.login}`}>{member.login}</Link>
-+    <Link to={generatePath('/detail/:id', {id: member.login})}>{member.login}</Link>
-  </td>
-```
-
-What is the impact of not encoding? If you want to test it, replace the code inside the useEffect with this one;
-
-```tsx
-setMembers([{ id: "2", login: "a/b", avatar_url: "" }]);
-```
-
-> In the architecture part we will learn how to remove "magic strings" from our application.
-> harcoding url all around our app is not a good idea.
-
-- Very interesting, but how can I read the id of the user I am receiving in the URL parameter?
-
-First we are going to define the parameter in the url of our router.
-
-_./src/app.tsx_
-
-```diff
--  <Route path="/detail" element={<DetailPage />} />
-+  <Route path="/detail/:id" element={<DetailPage/>}/>
-  </Route>
-```
-
-Using the _useParams_ hooks.
-
-_./src/detail.tsx_
-
-```diff
-import React from "react";
-- import { Link } from "react-router-dom";
-+ import { Link, useParams } from "react-router-dom";
-
-
-export const DetailPage: React.FC = () => {
-+ const {id} = useParams();
-
-  return (
-    <>
-      <h2>Hello from Detail page</h2>
-+     <h3>User Id: {id}</h3>
-      <Link to="/list">Back to list page</Link>
-    </>
-  );
-};
-```
+**Desarrollado como parte del Módulo 4 - Frameworks del Master en Frontend**
