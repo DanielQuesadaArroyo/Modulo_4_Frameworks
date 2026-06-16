@@ -1,0 +1,66 @@
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f0f0f0;
+  width: 100%;
+  padding: 0 2.5rem; // Padding lateral para que respire el diseño
+  box-sizing: border-box;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+
+  h1 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: bold; // Forzamos la negrita
+    color: #333;
+  }
+}
+
+.logo {
+  height: 40px; // Reducido un poco para que encaje mejor en un header estándar
+  width: 40px;
+  object-fit: contain;
+}
+
+.header-menu {
+  margin-right: auto; // 🪄 Empuja todo lo que venga después (auth-area) a la derecha
+  margin-left: 2rem; // Separación sutil entre el título "My App" y el menú
+}
+
+.auth-area {
+  display: flex;
+  align-items: center;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.username {
+  font-weight: 500;
+  font-size: 1rem;
+  color: #333;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  color: #333;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #cccccc;
+  }
+}

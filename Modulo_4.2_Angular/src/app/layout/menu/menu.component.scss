@@ -1,0 +1,36 @@
+nav {
+}
+
+ul {
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  display: block;
+}
+
+a,
+button {
+  text-decoration: none;
+  color: #333;
+  padding: 1rem;
+  display: block;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+a:hover,
+button:hover {
+  background-color: #cccccc;
+}
+
+a.active {
+  font-weight: bold;
+}

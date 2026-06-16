@@ -1,0 +1,46 @@
+<nav>
+  <!-- Public Menu -->
+  @if (!authService.isLogged()) {
+    <ul>
+      @for (item of publicMenu; track item) {
+        <li>
+          <a
+            [routerLink]="[item.route]"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+            >{{ item.label }}</a
+          >
+        </li>
+      }
+    </ul>
+  }
+
+  <!-- Private Menu -->
+  @if (authService.isLogged() && authService.isAdmin()) {
+    <ul>
+      @for (item of privateAdminMenu; track item) {
+        <li>
+          <a
+            [routerLink]="[item.route]"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+            >{{ item.label }}</a
+          >
+        </li>
+      }
+    </ul>
+  } @else if (authService.isLogged() && !authService.isAdmin()) {
+    <ul>
+      @for (item of privateUserMenu; track item) {
+        <li>
+          <a
+            [routerLink]="[item.route]"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+            >{{ item.label }}</a
+          >
+        </li>
+      }
+    </ul>
+  }
+</nav>
