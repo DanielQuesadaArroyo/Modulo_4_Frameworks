@@ -1,5 +1,7 @@
 import { Injectable } from "@angular/core";
 import { User } from "../models/user.model";
+import { Observable, of } from "rxjs";
+import { delay } from "rxjs";
 
 @Injectable({ providedIn: "root" })
 export class AuthService {
@@ -33,10 +35,11 @@ export class AuthService {
     }
   }
 
-  public login(username: string, password: string): boolean {
+  public login(username: string, password: string): Observable<boolean> {
     const user = this.validUsers.find(
       (u) => u.username === username && u.password === password,
     );
+
     if (user) {
       this.currentUser = {
         id: user.id,
@@ -46,9 +49,9 @@ export class AuthService {
 
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.currentUser));
 
-      return true;
+      return of(true).pipe(delay(2000));
     }
-    return false;
+    return of(false).pipe(delay(2000));
   }
 
   public logout(): void {

@@ -45,11 +45,18 @@
           color="primary"
           type="submit"
           class="full-width submit-btn"
-          [disabled]="loginForm.invalid"
+          [disabled]="loginForm.invalid || isLoading"
         >
-          Entrar
+          @if (isLoading) {
+            <span>Iniciando sesión...</span>
+          } @else {
+            <span>Entrar</span>
+          }
         </button>
       </form>
+      @if (isLoading) {
+        <img class="logo" src="/logo.png" alt="Loading..." />
+      }
     </mat-card-content>
   </mat-card>
 </div>

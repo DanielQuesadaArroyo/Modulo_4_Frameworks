@@ -10,7 +10,6 @@ import { MatCardModule } from "@angular/material/card";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
-
 import { AuthService } from "../../services/auth.service";
 
 @Component({
@@ -28,6 +27,7 @@ import { AuthService } from "../../services/auth.service";
 export class LoginComponent {
   loginForm: FormGroup;
   errorMessage = "";
+  isLoading = false;
 
   constructor(
     private authService: AuthService,
@@ -41,13 +41,25 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    if (this.loginForm.valid) {
-      const { username, password } = this.loginForm.value;
-      if (this.authService.login(username, password)) {
-        this.router.navigate(["/dashboard"]);
-      } else {
-        this.errorMessage = "Usuario o contraseña incorrectos.";
-      }
-    }
+    const { username, password } = this.loginForm.value;
+    this.isLoading = true;
+
+    this.authService.login(username, password).subscribe({
+      next: (success: boolean) => {
+        if (success) {
+          this.router.navigate(["/dashboard"]);
+        } else {
+          this.errorMessage = "Usuario o contraseña incorrectos.";
+        }
+      },
+      error: (error: Error) => {
+        this.isLoading = false;
+        this.errorMessage = "Error.";
+      },
+      complete: () => {
+        this.isLoading = false;
+        console.log("Completado");
+      },
+    });
   }
 }
